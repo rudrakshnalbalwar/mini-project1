@@ -3,95 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Heart Disease Prediction</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Heart Disease Predictor</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+        h1 { color: #333; }
+        form { margin-bottom: 20px; }
+        input { margin: 5px 0; padding: 5px; width: 200px; }
+        input[type="submit"] { background-color: #4CAF50; color: white; cursor: pointer; }
+        .result { font-weight: bold; margin-top: 20px; }
+    </style>
 </head>
-<body class="bg-gray-100 p-8">
-    <div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-6">
-        <h1 class="text-2xl font-bold mb-4">Heart Disease Prediction</h1>
-        <form id="prediction-form" class="space-y-4">
-            <div><input type="number" id="Age" placeholder="Age" class="w-full p-2 border rounded" required></div>
-            <div>
-                <select id="Sex" class="w-full p-2 border rounded" required>
-                    <option value="">Select Sex</option>
-                    <option value="1">Male</option>
-                    <option value="0">Female</option>
-                </select>
-            </div>
-            <div>
-                <select id="ChestPainType" class="w-full p-2 border rounded" required>
-                    <option value="">Select Chest Pain Type</option>
-                    <option value="1">TA</option>
-                    <option value="2">ATA</option>
-                    <option value="3">NAP</option>
-                    <option value="4">ASY</option>
-                </select>
-            </div>
-            <div><input type="number" id="RestingBP" placeholder="Resting BP" class="w-full p-2 border rounded" required></div>
-            <div><input type="number" id="Cholesterol" placeholder="Cholesterol" class="w-full p-2 border rounded" required></div>
-            <div>
-                <select id="FastingBS" class="w-full p-2 border rounded" required>
-                    <option value="">Select Fasting Blood Sugar</option>
-                    <option value="0">Less than 120 mg/dl</option>
-                    <option value="1">Greater than 120 mg/dl</option>
-                </select>
-            </div>
-            <div>
-                <select id="RestingECG" class="w-full p-2 border rounded" required>
-                    <option value="">Select Resting ECG</option>
-                    <option value="1">Normal</option>
-                    <option value="2">ST</option>
-                    <option value="3">LVH</option>
-                </select>
-            </div>
-            <div><input type="number" id="MaxHR" placeholder="Max Heart Rate" class="w-full p-2 border rounded" required></div>
-            <div>
-                <select id="ExerciseAngina" class="w-full p-2 border rounded" required>
-                    <option value="">Exercise Induced Angina</option>
-                    <option value="0">No</option>
-                    <option value="1">Yes</option>
-                </select>
-            </div>
-            <div><input type="number" id="Oldpeak" placeholder="Oldpeak" step="0.1" class="w-full p-2 border rounded" required></div>
-            <div>
-                <select id="ST_Slope" class="w-full p-2 border rounded" required>
-                    <option value="">Select ST Slope</option>
-                    <option value="1">Up</option>
-                    <option value="2">Flat</option>
-                    <option value="3">Down</option>
-                </select>
-            </div>
-            <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Predict</button>
-        </form>
-        <div id="result" class="mt-4 p-4 bg-gray-200 rounded hidden"></div>
+<body>
+    <h1>Heart Disease Predictor</h1>
+    <form action="{{ url_for('predict')}}" method="post">
+        <input type="number" name="age" placeholder="Age" required><br>
+        <input type="number" name="sex" placeholder="Sex (0 or 1)" required><br>
+        <input type="number" name="cp" placeholder="Chest Pain Type" required><br>
+        <input type="number" name="trestbps" placeholder="Resting Blood Pressure" required><br>
+        <input type="number" name="chol" placeholder="Cholesterol" required><br>
+        <input type="number" name="fbs" placeholder="Fasting Blood Sugar" required><br>
+        <input type="number" name="restecg" placeholder="Resting ECG" required><br>
+        <input type="number" name="thalach" placeholder="Max Heart Rate" required><br>
+        <input type="number" name="exang" placeholder="Exercise Induced Angina" required><br>
+        <input type="number" name="oldpeak" placeholder="ST Depression" required><br>
+        <input type="number" name="slope" placeholder="Slope of ST Segment" required><br>
+        <input type="number" name="ca" placeholder="Number of Major Vessels" required><br>
+        <input type="number" name="thal" placeholder="Thalassemia" required><br>
+        <input type="submit" value="Predict">
+    </form>
+    <div class="result">
+        {% if prediction_text %}
+            <p>{{ prediction_text }}</p>
+        {% endif %}
+        {% if risk_percentage %}
+            <p>{{ risk_percentage }}</p>
+        {% endif %}
     </div>
-
-    <script>
-        document.getElementById('prediction-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData(e.target);
-            const data = Object.fromEntries(formData.entries());
-
-            try {
-                const response = await fetch('/predict', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data),
-                });
-                const result = await response.json();
-                const resultDiv = document.getElementById('result');
-                resultDiv.innerHTML = `
-                    <p>Prediction: ${result.prediction === 1 ? 'High risk of heart disease' : 'Low risk of heart disease'}</p>
-                    <p>Probability: ${(result.probability * 100).toFixed(2)}%</p>
-                `;
-                resultDiv.classList.remove('hidden');
-            } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred while making the prediction.');
-            }
-        });
-    </script>
 </body>
 </html>
