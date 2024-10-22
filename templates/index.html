@@ -1,43 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Heart Disease Predictor</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
-        h1 { color: #333; }
-        form { margin-bottom: 20px; }
-        input { margin: 5px 0; padding: 5px; width: 200px; }
-        input[type="submit"] { background-color: #4CAF50; color: white; cursor: pointer; }
-        .result { font-weight: bold; margin-top: 20px; }
-    </style>
+    <link href="{{url_for('static',filename='../static/css/output-style.css')}}" rel="stylesheet">
 </head>
-<body>
-    <h1>Heart Disease Predictor</h1>
-    <form action="{{ url_for('predict')}}" method="post">
-        <input type="number" name="age" placeholder="Age" required><br>
-        <input type="number" name="sex" placeholder="Sex (0 or 1)" required><br>
-        <input type="number" name="cp" placeholder="Chest Pain Type" required><br>
-        <input type="number" name="trestbps" placeholder="Resting Blood Pressure" required><br>
-        <input type="number" name="chol" placeholder="Cholesterol" required><br>
-        <input type="number" name="fbs" placeholder="Fasting Blood Sugar" required><br>
-        <input type="number" name="restecg" placeholder="Resting ECG" required><br>
-        <input type="number" name="thalach" placeholder="Max Heart Rate" required><br>
-        <input type="number" name="exang" placeholder="Exercise Induced Angina" required><br>
-        <input type="number" name="oldpeak" placeholder="ST Depression" required><br>
-        <input type="number" name="slope" placeholder="Slope of ST Segment" required><br>
-        <input type="number" name="ca" placeholder="Number of Major Vessels" required><br>
-        <input type="number" name="thal" placeholder="Thalassemia" required><br>
-        <input type="submit" value="Predict">
-    </form>
-    <div class="result">
-        {% if prediction_text %}
-            <p>{{ prediction_text }}</p>
-        {% endif %}
-        {% if risk_percentage %}
-            <p>{{ risk_percentage }}</p>
-        {% endif %}
+
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-2xl">
+        <div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-8 text-center">Heart Disease Predictor</h1>
+
+            <form action="{{ url_for('predict')}}" method="post" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-700">Age</label>
+                        <input type="number" name="age" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-700">Sex (0 or 1)</label>
+                        <input type="number" name="sex" min="0" max="1" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-700">Chest Pain Type</label>
+                        <input type="number" name="cp" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-700">Resting Blood Pressure</label>
+                        <input type="number" name="trestbps" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-700">Cholesterol</label>
+                        <input type="number" name="chol" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-700">Fasting Blood Sugar</label>
+                        <input type="number" name="fbs" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-700">Resting ECG</label>
+                        <input type="number" name="restecg" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-700">Max Heart Rate</label>
+                        <input type="number" name="thalach" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-700">Exercise Induced Angina</label>
+                        <input type="number" name="exang" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-700">ST Depression</label>
+                        <input type="number" name="oldpeak" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-700">Slope of ST Segment</label>
+                        <input type="number" name="slope" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-700">Number of Major Vessels</label>
+                        <input type="number" name="ca" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-700">Thalassemia</label>
+                        <input type="number" name="thal" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <button type="submit"
+                        class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200">
+                        Predict
+                    </button>
+                </div>
+            </form>
+
+            <div class="mt-6">
+                {% if prediction_text %}
+                <div class="p-4 bg-gray-50 rounded-md">
+                    <p class="text-gray-800 font-medium">{{ prediction_text }}</p>
+                </div>
+                {% endif %}
+                {% if risk_percentage %}
+                <div class="mt-2 p-4 bg-gray-50 rounded-md">
+                    <p class="text-gray-800 font-medium">{{ risk_percentage }}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
     </div>
 </body>
+
 </html>
